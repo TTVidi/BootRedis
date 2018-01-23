@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.vidi.demo.dao.CityDao">
+    <resultMap id="CityResult" type="com.vidi.demo.domain.City">
+        <result column="id" property="id"/>
+        <result column="city_name" property="cityName"/>
+        <result column="province_id" property="provinceId"/>
+        <result column="description" property="description"/>
+    </resultMap>
+
+    <parameterMap id="CityParam" type="com.vidi.demo.domain.City"/>
+
+    <sql id="Base_column">
+        id, province_id, city_name, description
+    </sql>
+
+    <!--get all city information-->
+    <select id="findAllCity" resultMap="CityResult">
+        SELECT
+        <include refid="Base_column"/>
+        FROM city;
+    </select>
+
+    <!--search city information from database-->
+    <select id="findCityById" resultMap="CityResult" parameterType="java.lang.Long">
+        SELECT
+        <include refid="Base_column"/>
+        FROM city
+        WHERE id=#{id};
+    </select>
+
+    <insert id="saveCity" parameterMap="CityParam" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO city (id, province_id, city_name, description)
+        VALUES (#{id}, #{provinceId}, #{cityName}, #{description})
+    </insert>
+
+    <update id="updateCity" parameterMap="CityParam">
+        UPDATE city SET
+        <if test="provinceId!=null">
+            province_id=#{provinceId},
+        </if>
+        <if test="cityName!=null">
+            city_name=#{cityName},
+        </if>
+        <if test="description!=null">
+            description=#{description}
+        </if>
+        WHERE id=#{id}
+    </update>
+
+    <delete id="deleteCity" parameterMap="CityParam">
+        DELETE FROM city
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
